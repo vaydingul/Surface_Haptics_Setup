@@ -96,6 +96,29 @@ classdef HapticSetup < handle
             
         end
         
+        
+        function [] = stop_horizontal_motor(obj)
+            
+            stop(obj.config.motor_horizontal);
+            obj.update();
+            
+        end
+        
+        function [] = stop_vertical_motor(obj)
+            
+            stop(obj.config.motor_vertical);
+            obj.update();
+            
+        end
+        
+        function [] = stop_motors(obj)
+            
+            obj.stop_vertical_motor();
+            obj.stop_horizontal_motor();
+            obj.update();
+            
+        end
+        
         function [] = home_horizontal_motor(obj)
             
             home(obj.config.motor_horizontal);
@@ -185,22 +208,22 @@ classdef HapticSetup < handle
         
         function [] = forward_pass(obj, x1, x2)
             
+            obj.state = 1;
+            obj.update();
             obj.move_horizontal_motor_to_position(x1);
             obj.move_horizontal_motor_to_position(x2);
             
-            obj.update_position_velocity();
-            obj.state = 1;
-            obj.update();
+            
             
         end
         
         function [] = backward_pass(obj, x1, x2)
             
-            obj.move_horizontal_motor_to_position(x2);
-            obj.move_horizontal_motor_to_position(x1);
-            obj.update_position_velocity();
             obj.state = 0;
             obj.update();
+            obj.move_horizontal_motor_to_position(x2);
+            obj.move_horizontal_motor_to_position(x1);
+            
         end
         
         function [] = controller_step(obj)
@@ -245,7 +268,7 @@ classdef HapticSetup < handle
             disp("Simulation started!");
             % It connects to both vertical and horizontal motor
             obj.connect_motors();
-            
+            disp("Motors are connected!");
             
             
             % Move motors to the initial point
@@ -264,13 +287,14 @@ classdef HapticSetup < handle
                 
                 i = i + 1;
             end
+            obj.stop_vertical_motor();
             disp("Force control finished!");
             
             % Set the limits of the travelling trajectory
             x1 = min(obj.config.initial_horizontal_position + obj.config.delta_x, obj.config.max_travel_safety_horizontal - 10); % 95
             x2 = max(obj.config.initial_horizontal_position - obj.config.delta_x, 10); % 55
             
-            obj.move_horizontal_motor_to_position(x2);
+            obj.move_horizontal_motor_to_position(x1);
             
             i = 1;
             

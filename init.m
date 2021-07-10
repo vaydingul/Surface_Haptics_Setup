@@ -5,7 +5,7 @@
 
 % Experiment parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 config.participant_name = 'VolkanTrialSeries';
-config.number_of_slidings = 2; % How many sliding there will be in the experiment
+config.number_of_slidings = 1; % How many sliding there will be in the experiment
 config.simulation_name = 'experimentSim_2018a';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -42,7 +42,7 @@ config.min_acceleration_safety = 5;
 config.minimum_acceleration = 0.000111; %min acceleration and horizontal stage current_velocity limitation
 config.maximum_acceleration = 50;
 config.initial_pid_tuning_trial = 200;
-config.relaxation_distance = 1;
+config.relaxation_distance = 10;
 config.relaxation_duration = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -58,8 +58,7 @@ config.butterworth_sampling_frequency = 2500;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-config.sliding_velocity = [40 40];
+config.sliding_velocity = [40];
 %% condition
 
-config.condition = [1.0000    0.0000    0.5000;
-    1.0000    0.0000    0.5000];
+config.condition = [1.0000    0.0000    0.5000];

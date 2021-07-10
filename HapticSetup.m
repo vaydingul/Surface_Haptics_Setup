@@ -212,9 +212,7 @@ classdef HapticSetup < handle
             obj.update();
             obj.move_horizontal_motor_to_position(x1);
             obj.move_horizontal_motor_to_position(x2);
-            
-            
-            
+
         end
         
         function [] = backward_pass(obj, x1, x2)
@@ -228,6 +226,8 @@ classdef HapticSetup < handle
         
         function [] = controller_step(obj)
             
+            obj.state = 0;
+            obj.update();
             % If the stage is below the safe travel limit
             if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
                 
@@ -248,18 +248,22 @@ classdef HapticSetup < handle
             pause(.1);
             
             obj.move_vertical_motor_continuous(1);
-            obj.state = 0;
-            obj.update();
+            
             
         end
         
         function [] = finger_relaxation(obj)
             
+            obj.state = 0;
+            obj.update();
+            
+            obj.set_velocity_vertical_motor(obj.config.max_velocity_safety, obj.config.max_acceleration_safety)
             obj.move_vertical_motor_to_position(obj.motor_vertical_position + obj.config.relaxation_distance);
             pause(obj.config.relaxation_duration);
             obj.move_vertical_motor_to_position(obj.motor_vertical_position - obj.config.relaxation_distance);
-            obj.state = 0;
-            obj.update();
+            obj.set_velocity_vertical_motor(obj.config.min_velocity_safety, obj.config.min_acceleration_safety)
+            
+            
         end
         
         function [] = experiment(obj)
@@ -270,13 +274,15 @@ classdef HapticSetup < handle
             obj.connect_motors();
             disp("Motors are connected!");
             
+            %             obj.home_motors();
+            disp("Motors are home!");
             
             % Move motors to the initial point
             
             obj.move_horizontal_motor_to_position(obj.config.initial_horizontal_position);
             obj.move_vertical_motor_to_position(obj.config.initial_vertical_position);
             disp("Stages are located to their initial positions!");
-
+            
             
             
             i = 0;
@@ -285,7 +291,7 @@ classdef HapticSetup < handle
                 
                 obj.controller_step();
                 
-                i = i + 1;
+                i = i + 1
             end
             obj.stop_vertical_motor();
             disp("Force control finished!");
@@ -309,15 +315,37 @@ classdef HapticSetup < handle
                 
                 obj.finger_relaxation();
                 obj.update();
-
+                
                 obj.forward_pass(x1, x2);
                 obj.update();
-
+                
+                k = 0;
+                disp("Force control started!");
+                while (k < int32(obj.config.initial_pid_tuning_trial/4))
+                    
+                    obj.controller_step();
+                    
+                    k = k + 1
+                end
+                obj.stop_vertical_motor();
+                disp("Force control finished!");
+                
                 obj.finger_relaxation();
                 obj.update();
-
+                
                 obj.backward_pass(x1, x2);
                 obj.update();
+                
+                k = 0;
+                disp("Force control started!");
+                while (k < int32(obj.config.initial_pid_tuning_trial/4))
+                    
+                    obj.controller_step();
+                    
+                    k = k + 1
+                end
+                obj.stop_vertical_motor();
+                disp("Force control finished!");
                 
                 i = i + 1;
                 
@@ -326,7 +354,7 @@ classdef HapticSetup < handle
             end
             
             obj.disconnect_motors();
-
+            
             
             obj.stop_simulation();
             

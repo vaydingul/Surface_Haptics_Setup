@@ -190,10 +190,7 @@ classdef motor < handle
             h.minvelocity=System.Decimal.ToDouble(velocityparams.MinVelocity);   % update Min velocity parameter
             h.position=System.Decimal.ToDouble(h.deviceNET.Position);   % Read current device position
         end
-        
-        function updatestatus_Pos(h)
-          h.position=System.Decimal.ToDouble(h.deviceNET.Position);   
-        end
+      
         
         function setvelocity(h, varargin)  % Set velocity and acceleration parameters
             velpars=h.deviceNET.GetVelocityParams(); % Get existing velocity and acceleration parameters

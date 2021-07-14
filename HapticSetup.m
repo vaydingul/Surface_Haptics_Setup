@@ -4,26 +4,27 @@ classdef HapticSetup < handle
     
     properties
         config
+
         motor_horizontal_position = 0;
         motor_vertical_position = 0;
+        
         current_sliding_iteration = 1;
+        
         controller_output_runtime_object
         controller_output = 0;
-        state = 0;
-    end
-    
-    properties (Access = private)
         
-        
+        state
+        status = 0;
     end
-    
+   
     methods
         
         function obj = HapticSetup(config)
             
             obj.config = config;
             obj.current_sliding_iteration = 1;
-            obj.state = 0;
+            obj.status = 0;
+            obj.state = InitState();
         end
         
         function [] = start_simulation(obj)
@@ -141,16 +142,16 @@ classdef HapticSetup < handle
             
         end
         
-        function [] = set_velocity_horizontal_motor(obj, varargin)
+        function [] = set_velocity_horizontal_motor(obj, velocity, acceleration)
             
-            setvelocity(obj.config.motor_horizontal, varargin{1})
+            setvelocity(obj.config.motor_horizontal,  velocity, acceleration)
             obj.update();
             
         end
         
-        function [] = set_velocity_vertical_motor(obj, varargin)
+        function [] = set_velocity_vertical_motor(obj, velocity, acceleration)
             
-            setvelocity(obj.config.motor_vertical, varargin{1}, varargin{2})
+            setvelocity(obj.config.motor_vertical, velocity, acceleration)
             obj.update();
             
         end
@@ -200,7 +201,7 @@ classdef HapticSetup < handle
             obj.motor_horizontal_position = obj.config.motor_horizontal.position;
             obj.motor_vertical_position = obj.config.motor_vertical.position;
             obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
-            set_param([obj.config.simulation_name '/' 'State'], 'Value', num2str(obj.state));
+            set_param([obj.config.simulation_name '/' 'State'], 'Value', num2str(obj.status));
             set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.config.motor_vertical.position));
             set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.config.motor_horizontal.position));
             
@@ -216,6 +217,24 @@ classdef HapticSetup < handle
         end
         
         function [] = backward_pass(obj, x1, x2)
+            
+            obj.state = 0;
+            obj.update();
+            obj.move_horizontal_motor_to_position(x2);
+            obj.move_horizontal_motor_to_position(x1);
+            
+        end
+
+        function [] = forward_pass_with_control(obj, x1, x2)
+            
+            obj.state = 1;
+            obj.update();
+            obj.move_horizontal_motor_to_position(x1);
+            obj.move_horizontal_motor_to_position(x2);
+
+        end
+        
+        function [] = backward_pass_with_control(obj, x1, x2)
             
             obj.state = 0;
             obj.update();
@@ -274,7 +293,7 @@ classdef HapticSetup < handle
             obj.connect_motors();
             disp("Motors are connected!");
             
-            %             obj.home_motors();
+            % obj.home_motors();
             disp("Motors are home!");
             
             % Move motors to the initial point

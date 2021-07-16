@@ -7,6 +7,7 @@
 config.participant_name = 'VolkanTrialSeries';
 config.number_of_slidings = 1; % How many sliding there will be in the experiment
 config.simulation_name = 'experimentSim_2018a';
+config.sample_time = 1 / 2500;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Electrovibration parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

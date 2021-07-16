@@ -6,6 +6,13 @@ classdef InitState < State
 
             haptic_setup.start_simulation();
             haptic_setup.connect_motors();
+            % Move motors to the initial point
+
+            haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.initial_horizontal_position);
+            haptic_setup.move_vertical_motor_to_position(haptic_setup.config.initial_vertical_position);
+            
+            haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.x1);
+
             haptic_setup.state = IdleState();
 
         end

@@ -221,33 +221,33 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = forward_pass_(obj, x1, x2)
+        function [] = forward_pass_(obj)
 
             obj.status = 1;
             obj.update();
-            obj.move_horizontal_motor_to_position(x1);
-            obj.move_horizontal_motor_to_position(x2);
+            obj.move_horizontal_motor_to_position(obj.config.x1);
+            obj.move_horizontal_motor_to_position(obj.config.x2);
 
         end
 
-        function [] = backward_pass_(obj, x1, x2)
+        function [] = backward_pass_(obj)
 
             obj.status = 0;
             obj.update();
-            obj.move_horizontal_motor_to_position(x2);
-            obj.move_horizontal_motor_to_position(x1);
+            obj.move_horizontal_motor_to_position(obj.config.x2);
+            obj.move_horizontal_motor_to_position(obj.config.x1);
 
         end
 
-        function [] = forward_pass_with_control_(obj, x1, x2)
+        function [] = forward_pass_with_control_(obj)
 
             obj.status = 1;
             obj.update();
 
-            obj.move_horizontal_motor_to_position(x1);
+            obj.move_horizontal_motor_to_position(obj.config.x1);
             obj.move_horizontal_motor_continuous(-1);
 
-            while obj.motor_horizontal_position > x2
+            while obj.motor_horizontal_position > obj.config.x2
 
                 obj.update();
                 obj.controller_step();
@@ -259,15 +259,15 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = backward_pass_with_control_(obj, x1, x2)
+        function [] = backward_pass_with_control_(obj)
 
             obj.status = 0;
             obj.update();
 
-            obj.move_horizontal_motor_to_position(x1);
+            obj.move_horizontal_motor_to_position(obj.config.x1);
             obj.move_horizontal_motor_continuous(-1);
 
-            while obj.motor_horizontal_position > x2
+            while obj.motor_horizontal_position > obj.config.x2
 
                 obj.update();
                 obj.controller_step();
@@ -283,6 +283,7 @@ classdef HapticSetup < handle
 
             obj.state = 0;
             obj.update();
+
             % If the stage is below the safe travel limit
             if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
 
@@ -314,6 +315,9 @@ classdef HapticSetup < handle
 
                 i = i + 1
             end
+
+            obj.stop_vertical_motor();
+
 
         end
 
@@ -357,13 +361,9 @@ classdef HapticSetup < handle
                 i = i + 1
             end
 
-            obj.stop_vertical_motor();
             disp("Force control finished!");
 
-            % Set the limits of the travelling trajectory
-            x1 = min(obj.config.initial_horizontal_position + obj.config.delta_x, obj.config.max_travel_safety_horizontal - 10); % 95
-            x2 = max(obj.config.initial_horizontal_position - obj.config.delta_x, 10); % 55
-
+            
             obj.move_horizontal_motor_to_position(x1);
 
             i = 1;

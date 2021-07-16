@@ -44,7 +44,14 @@ config.maximum_acceleration = 50;
 config.initial_pid_tuning_trial = 200;
 config.relaxation_distance = 10;
 config.relaxation_duration = 1;
+
+% Set the limits of the travelling trajectory
+config.x1 = min(config.initial_horizontal_position + config.delta_x, config.max_travel_safety_horizontal - 10); % 95
+config.x2 = max(config.initial_horizontal_position - config.delta_x, 10); % 55
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %% Butterworth filter design
 

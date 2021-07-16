@@ -24,6 +24,8 @@ classdef HapticSetup < handle
         controller_output_runtime_object
         controller_output = 0;
 
+        is_control_active = 0;
+
         state
         status = 0;
 
@@ -44,6 +46,7 @@ classdef HapticSetup < handle
             set_param(obj.config.simulation_name, 'SimulationCommand', 'start');
             obj.controller_output_runtime_object = get_param([obj.config.simulation_name, '/', 'pid_output_saturated'], 'RuntimeObject');
             obj.is_simulation_running = 1;
+            disp("Simulation started!");
 
         end
 
@@ -239,7 +242,7 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = forward_pass_with_control_(obj)
+        function [] = forward_pass_continuous_(obj)
 
             obj.status = 1;
             obj.update();
@@ -259,7 +262,7 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = backward_pass_with_control_(obj)
+        function [] = backward_pass_continuous_(obj)
 
             obj.status = 0;
             obj.update();
@@ -281,33 +284,38 @@ classdef HapticSetup < handle
 
         function [] = controller_step(obj)
 
-            obj.state = 0;
+            %obj.state = 0;
             obj.update();
 
-            % If the stage is below the safe travel limit
-            if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
+            if obj.is_control_active
 
-                % Set current_velocity of the vertical stage based on the PID output
-                vel = -sign(obj.controller_output);
+                % If the stage is below the safe travel limit
+                if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
 
-                % Check if it is zero.
-                if (vel == 0), vel = 1; end
+                    % Set current_velocity of the vertical stage based on the PID output
+                    vel = -sign(obj.controller_output);
 
-                obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
+                    % Check if it is zero.
+                    if (vel == 0), vel = 1; end
 
-            else
+                    obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
 
-                obj.set_velocity_vertical_motor(-1, 10);
+                else
 
+                    obj.set_velocity_vertical_motor(-1, 10);
+
+                end
+
+                pause(.1);
+
+                obj.move_vertical_motor_continuous(1);
             end
-
-            pause(.1);
-
-            obj.move_vertical_motor_continuous(1);
 
         end
 
         function [] = controller_step_multiple(obj)
+
+            obj.status = 0;
 
             while (i < obj.config.initial_pid_tuning_trial)
 
@@ -317,7 +325,6 @@ classdef HapticSetup < handle
             end
 
             obj.stop_vertical_motor();
-
 
         end
 
@@ -363,7 +370,6 @@ classdef HapticSetup < handle
 
             disp("Force control finished!");
 
-            
             obj.move_horizontal_motor_to_position(x1);
 
             i = 1;
@@ -446,15 +452,15 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = forward_pass_with_control(obj)
+        function [] = forward_pass_continuous(obj)
 
-            obj.state.forward_pass_with_control();
+            obj.state.forward_pass_continuous();
 
         end
 
-        function [] = backward_pass_with_control(obj)
+        function [] = backward_pass_continuous(obj)
 
-            obj.state.backward_pass_with_control();
+            obj.state.backward_pass_continuous();
 
         end
 

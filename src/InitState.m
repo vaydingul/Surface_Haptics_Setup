@@ -27,19 +27,21 @@ classdef InitState < State
         function kill(haptic_setup)
 
             warning('It is not recommended to kill() in INIT state.')
+            haptic_setup.disconnect_motors()
+            haptic_setup.stop_simulation();
             haptic_setup.state = IdleState()
 
         end
 
-        function forward_pass_with_control(haptic_setup)
+        function forward_pass_continuous(haptic_setup)
 
-            error('It is not recommended to forward_pass_with_control() in INIT state.')
-
+            error('It is not recommended to forward_pass_continuous() in INIT state.')
+            
         end
 
-        function backward_pass_with_control(haptic_setup)
+        function backward_pass_continuous(haptic_setup)
 
-            error('It is not recommended to backward_pass_with_control() in INIT state.')
+            error('It is not recommended to backward_pass_continuous() in INIT state.')
 
         end
 

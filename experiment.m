@@ -34,11 +34,11 @@ while (i <= haptic_setup.config.number_of_slidings)
 
 	haptic_setup.finger_relaxation();
 
-	haptic_setup.forward_pass_with_control()
+	haptic_setup.forward_pass_continuous()
 
 	haptic_setup.finger_relaxation();
 
-	haptic_setup.backward_pass_with_control()
+	haptic_setup.backward_pass_continuous()
 
 	haptic_setup.state
 

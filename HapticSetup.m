@@ -34,7 +34,6 @@ classdef HapticSetup < handle
         function obj = HapticSetup(config)
 
             obj.config = config;
-            obj.
             obj.current_sliding_iteration = 1;
             obj.status = 0;
             obj.state = InitState();
@@ -58,14 +57,14 @@ classdef HapticSetup < handle
         function [] = connect_horizontal_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
-            connect(obj.config.motor_horizontal, obj.config.horizontal_serial_number);
+            connect(obj.motor_horizontal, obj.config.horizontal_serial_number);
 
         end
 
         function [] = connect_vertical_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
-            connect(obj.config.motor_vertical, obj.config.vertical_serial_number);
+            connect(obj.motor_vertical, obj.config.vertical_serial_number);
         end
 
         function [] = connect_motors(obj)
@@ -79,14 +78,14 @@ classdef HapticSetup < handle
         function [] = disconnect_horizontal_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
-            disconnect(obj.config.motor_horizontal);
+            disconnect(obj.motor_horizontal);
 
         end
 
         function [] = disconnect_vertical_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
-            disconnect(obj.config.motor_vertical);
+            disconnect(obj.motor_vertical);
         end
 
         function [] = disconnect_motors(obj)
@@ -99,14 +98,14 @@ classdef HapticSetup < handle
 
         function [] = stop_horizontal_motor(obj)
 
-            stop(obj.config.motor_horizontal);
+            stop(obj.motor_horizontal);
             obj.update();
 
         end
 
         function [] = stop_vertical_motor(obj)
 
-            stop(obj.config.motor_vertical);
+            stop(obj.motor_vertical);
             obj.update();
 
         end
@@ -121,14 +120,14 @@ classdef HapticSetup < handle
 
         function [] = home_horizontal_motor(obj)
 
-            home(obj.config.motor_horizontal);
+            home(obj.motor_horizontal);
             obj.update();
 
         end
 
         function [] = home_vertical_motor(obj)
 
-            home(obj.config.motor_vertical);
+            home(obj.motor_vertical);
             obj.update();
 
         end
@@ -143,28 +142,28 @@ classdef HapticSetup < handle
 
         function [] = move_horizontal_motor_to_position(obj, position_x)
 
-            moveto(obj.config.motor_horizontal, position_x);
+            moveto(obj.motor_horizontal, position_x);
             obj.update();
 
         end
 
         function [] = move_vertical_motor_to_position(obj, position_y)
 
-            moveto(obj.config.motor_vertical, position_y);
+            moveto(obj.motor_vertical, position_y);
             obj.update();
 
         end
 
         function [] = set_velocity_horizontal_motor(obj, velocity, acceleration)
 
-            setvelocity(obj.config.motor_horizontal, velocity, acceleration)
+            setvelocity(obj.motor_horizontal, velocity, acceleration)
             obj.update();
 
         end
 
         function [] = set_velocity_vertical_motor(obj, velocity, acceleration)
 
-            setvelocity(obj.config.motor_vertical, velocity, acceleration)
+            setvelocity(obj.motor_vertical, velocity, acceleration)
             obj.update();
 
         end
@@ -173,11 +172,11 @@ classdef HapticSetup < handle
 
             if dir == 1
 
-                movecont(obj.config.motor_horizontal);
+                movecont(obj.motor_horizontal);
 
             elseif dir == -1
 
-                movecont(obj.config.motor_horizontal, dir);
+                movecont(obj.motor_horizontal, dir);
 
             else
 
@@ -193,11 +192,11 @@ classdef HapticSetup < handle
 
             if dir == 1
 
-                movecont(obj.config.motor_vertical);
+                movecont(obj.motor_vertical);
 
             elseif dir == -1
 
-                movecont(obj.config.motor_vertical, dir);
+                movecont(obj.motor_vertical, dir);
 
             else
 
@@ -211,17 +210,18 @@ classdef HapticSetup < handle
 
         function obj = update(obj)
 
-            obj.motor_horizontal_position = obj.config.motor_horizontal.position;
-            obj.motor_vertical_position = obj.config.motor_vertical.position;
+            obj.motor_horizontal_position = obj.motor_horizontal.position;
+            obj.motor_vertical_position = obj.motor_vertical.position;
 
             obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
+
             set_param([obj.config.simulation_name '/' 'Status'], 'Value', num2str(obj.status));
-            set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.config.motor_vertical.position));
-            set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.config.motor_horizontal.position));
+            set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.motor_vertical.position));
+            set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.motor_horizontal.position));
 
         end
 
-        function [] = forward_pass(obj, x1, x2)
+        function [] = forward_pass_(obj, x1, x2)
 
             obj.status = 1;
             obj.update();
@@ -230,7 +230,7 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = backward_pass(obj, x1, x2)
+        function [] = backward_pass_(obj, x1, x2)
 
             obj.status = 0;
             obj.update();
@@ -239,7 +239,7 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = forward_pass_with_control(obj, x1, x2)
+        function [] = forward_pass_with_control_(obj, x1, x2)
 
             obj.status = 1;
             obj.update();
@@ -259,7 +259,7 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = backward_pass_with_control(obj, x1, x2)
+        function [] = backward_pass_with_control_(obj, x1, x2)
 
             obj.status = 0;
             obj.update();
@@ -306,7 +306,18 @@ classdef HapticSetup < handle
 
         end
 
-        function [] = finger_relaxation(obj)
+        function [] = controller_step_multiple(obj)
+
+            while (i < obj.config.initial_pid_tuning_trial)
+
+                obj.controller_step();
+
+                i = i + 1
+            end
+
+        end
+
+        function [] = finger_relaxation_(obj)
 
             obj.state = 0;
             obj.update();
@@ -416,6 +427,60 @@ classdef HapticSetup < handle
     end
 
     methods (Static)
+
+        function [] = start(obj)
+
+            obj.state.start();
+
+        end
+
+        function [] = stop(obj)
+
+            obj.state.stop();
+
+        end
+
+        function [] = kill(obj)
+
+            obj.state.kill();
+
+        end
+
+        function [] = forward_pass_with_control(obj)
+
+            obj.state.forward_pass_with_control();
+
+        end
+
+        function [] = backward_pass_with_control(obj)
+
+            obj.state.backward_pass_with_control();
+
+        end
+
+        function [] = forward_pass(obj)
+
+            obj.state.forward_pass();
+
+        end
+
+        function [] = backward_pass(obj)
+
+            obj.state.backward_pass();
+
+        end
+
+        function [] = finger_relaxation(obj)
+
+            obj.state.finger_relaxation();
+
+        end
+
+        function [] = control(obj)
+
+            obj.state.control();
+
+        end
 
         function [] = set_velocity(motor_, varargin)
 

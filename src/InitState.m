@@ -33,23 +33,13 @@ classdef InitState < State
 
         end
 
-<<<<<<< HEAD:src/InitState.m
-        function forward_pass_continuous(haptic_setup)
-=======
-        function forward_pass_with_control(obj, haptic_setup)
-
-            error('It is not recommended to forward_pass_with_control() in INIT state.')
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:InitState.m
+        function forward_pass_continuous(obj, haptic_setup)
 
             error('It is not recommended to forward_pass_continuous() in INIT state.')
             
         end
 
-<<<<<<< HEAD:src/InitState.m
-        function backward_pass_continuous(haptic_setup)
-=======
-        function backward_pass_with_control(obj, haptic_setup)
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:InitState.m
+        function backward_pass_continuous(obj, haptic_setup)
 
             error('It is not recommended to backward_pass_continuous() in INIT state.')
 

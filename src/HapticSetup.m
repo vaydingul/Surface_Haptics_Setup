@@ -23,13 +23,9 @@ classdef HapticSetup < handle
         
         controller_output_runtime_object
         controller_output = 0;
-<<<<<<< HEAD:src/HapticSetup.m
 
         is_control_active = 0;
 
-=======
-        
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
         state
         status = 0;
         
@@ -52,12 +48,8 @@ classdef HapticSetup < handle
             set_param(obj.config.simulation_name, 'SimulationCommand', 'start');
             obj.controller_output_runtime_object = get_param([obj.config.simulation_name, '/', 'pid_output_saturated'], 'RuntimeObject');
             obj.is_simulation_running = 1;
-<<<<<<< HEAD:src/HapticSetup.m
             disp("Simulation started!");
 
-=======
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
         end
         
         function [] = stop_simulation(obj)
@@ -251,15 +243,9 @@ classdef HapticSetup < handle
             obj.move_horizontal_motor_to_position(obj.config.x1);
             
         end
-<<<<<<< HEAD:src/HapticSetup.m
 
         function [] = forward_pass_continuous_(obj)
 
-=======
-        
-        function [] = forward_pass_with_control_(obj)
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
             obj.status = 1;
             obj.update();
             
@@ -277,15 +263,9 @@ classdef HapticSetup < handle
             obj.update();
             
         end
-<<<<<<< HEAD:src/HapticSetup.m
 
         function [] = backward_pass_continuous_(obj)
 
-=======
-        
-        function [] = backward_pass_with_control_(obj)
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
             obj.status = 0;
             obj.update();
             
@@ -305,7 +285,6 @@ classdef HapticSetup < handle
         end
         
         function [] = controller_step(obj)
-<<<<<<< HEAD:src/HapticSetup.m
 
             %obj.state = 0;
             obj.update();
@@ -334,44 +313,12 @@ classdef HapticSetup < handle
                 obj.move_vertical_motor_continuous(1);
             end
 
-=======
-            
-            obj.status = 0;
-            obj.update();
-            
-            % If the stage is below the safe travel limit
-            if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
-                
-                % Set current_velocity of the vertical stage based on the PID output
-                vel = -sign(obj.controller_output);
-                
-                % Check if it is zero.
-                if (vel == 0), vel = 1; end
-                
-                obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
-                
-            else
-                
-                obj.set_velocity_vertical_motor(-1, 10);
-                
-            end
-            
-            pause(.1);
-            
-            obj.move_vertical_motor_continuous(1);
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
         end
         
         function [] = controller_step_multiple(obj)
-<<<<<<< HEAD:src/HapticSetup.m
 
             obj.status = 0;
 
-=======
-            
-            i = 1;
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
             while (i < obj.config.initial_pid_tuning_trial)
                 
                 obj.controller_step();
@@ -380,12 +327,6 @@ classdef HapticSetup < handle
             end
             
             obj.stop_vertical_motor();
-<<<<<<< HEAD:src/HapticSetup.m
-
-=======
-            
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
         end
         
         function [] = finger_relaxation_(obj)
@@ -429,12 +370,6 @@ classdef HapticSetup < handle
             end
             
             disp("Force control finished!");
-<<<<<<< HEAD:src/HapticSetup.m
-
-=======
-            
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
             obj.move_horizontal_motor_to_position(x1);
             
             i = 1;
@@ -516,7 +451,6 @@ classdef HapticSetup < handle
             obj.state.kill(obj);
             
         end
-<<<<<<< HEAD:src/HapticSetup.m
 
         function [] = forward_pass_continuous(obj)
 
@@ -528,19 +462,6 @@ classdef HapticSetup < handle
 
             obj.state.backward_pass_continuous();
 
-=======
-        
-        function [] = forward_pass_with_control(obj)
-            
-            obj.state.forward_pass_with_control(obj);
-            
-        end
-        
-        function [] = backward_pass_with_control(obj)
-            
-            obj.state.backward_pass_with_control(obj);
-            
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:HapticSetup.m
         end
         
         function [] = forward_pass(obj)

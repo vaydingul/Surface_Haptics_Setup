@@ -24,11 +24,7 @@ classdef ControlState < State
 
         end
 
-<<<<<<< HEAD:src/ControlState.m
-        function forward_pass_continuous(haptic_setup)
-=======
-        function forward_pass_with_control(obj, haptic_setup)
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:ControlState.m
+        function forward_pass_continuous(obj, haptic_setup)
 
             warning('It is being switched to the FORWARD_PASS_WITH_CONTROL state. Please make sure that the initial control phase is completed.')
             haptic_setup.forward_pass_continuous_();
@@ -36,11 +32,7 @@ classdef ControlState < State
 
         end
 
-<<<<<<< HEAD:src/ControlState.m
-        function backward_pass_continuous(haptic_setup)
-=======
-        function backward_pass_with_control(obj, haptic_setup)
->>>>>>> 336e1172863d051cfdb3f574fff505dddbf7530e:ControlState.m
+        function backward_pass_continuous(obj, haptic_setup)
 
             warning('It is being switched to the BACKWARD_PASS_WITH_CONTROL state. Please make sure that the initial control phase is completed.')
             haptic_setup.backward_pass_continuous_();

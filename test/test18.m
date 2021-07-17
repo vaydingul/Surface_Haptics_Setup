@@ -29,8 +29,12 @@ haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.initial_horiz
 haptic_setup.move_vertical_motor_to_position(haptic_setup.config.initial_vertical_position);
 
 %% Forward pass with controller
-
+pause(1.0)
 haptic_setup.is_control_active = 1;
+pause(1.0)
+haptic_setup.controller_step_multiple();
+pause(1.0)
+haptic_setup.set_velocity_horizontal_motor(2, 5);
 
 haptic_setup.forward_pass_continuous_();
 

@@ -272,7 +272,12 @@ classdef HapticSetup < handle
                 
             end
             
-            obj.stop_horizontal_motor();
+            if obj.is_control_active
+                obj.stop_motors();
+            else
+                obj.stop_horizontal_motor();
+            end
+            
             obj.status = 0;
             obj.update();
             
@@ -298,15 +303,17 @@ classdef HapticSetup < handle
                 
             end
             
-            obj.stop_horizontal_motor();
             obj.status = 0;
             obj.update();
             
             
+            if obj.is_control_active
+                obj.stop_motors();
+            else
+                obj.stop_horizontal_motor();
+            end
             
-            
-            
-            
+       
         end
         
         function [] = controller_step(obj)
@@ -316,22 +323,15 @@ classdef HapticSetup < handle
             
             if obj.is_control_active
                 
-                % If the stage is below the safe travel limit
-                if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
-                    
-                    % Set current_velocity of the vertical stage based on the PID output
-                    vel = -sign(obj.controller_output);
-                    
-                    % Check if it is zero.
-                    if (vel == 0), vel = 1; end
-                    
-                    obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
-                    
-                else
-                    
-                    obj.set_velocity_vertical_motor(-1, 10);
-                    
-                end
+                
+                % Set current_velocity of the vertical stage based on the PID output
+                vel = -sign(obj.controller_output);
+
+                % Check if it is zero.
+                if (vel == 0), vel = 1; end
+
+                obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
+
                 
                 pause(.1);
                 
@@ -353,6 +353,7 @@ classdef HapticSetup < handle
             end
             
             obj.stop_vertical_motor();
+            obj.update();
         end
         
         function [] = finger_relaxation_(obj)

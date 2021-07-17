@@ -30,6 +30,7 @@ haptic_setup.move_vertical_motor_to_position(haptic_setup.config.initial_vertica
 
 %% Controller is active
 
+pause(2.0)
 haptic_setup.is_control_active = 1;
 
 haptic_setup.controller_step_multiple();
@@ -43,3 +44,5 @@ haptic_setup.disconnect_motors();
 %% Don't forget to close the simulation
 
 haptic_setup.stop_simulation();
+
+% OK

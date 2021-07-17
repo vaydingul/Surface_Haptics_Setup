@@ -41,3 +41,5 @@ haptic_setup.disconnect_motors();
 %% Don't forget to close the simulation
 
 haptic_setup.stop_simulation();
+
+% OK

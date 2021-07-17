@@ -32,7 +32,7 @@ config.motor_vertical = motor();
 
 %% Constants
 config.delta_x = 20; % Step movement of the stages(-20,0,20)
-config.initial_vertical_position = 65; % Initial vertical position
+config.initial_vertical_position = 55; % Initial vertical position
 config.initial_horizontal_position = 75; % Initial vertical position
 config.max_travel_safety_vertical = config.initial_vertical_position + 13;
 config.max_travel_safety_horizontal = 120; % Max travel point of stage safety limitation horizntal

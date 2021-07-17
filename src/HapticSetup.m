@@ -6,9 +6,6 @@ classdef HapticSetup < handle
         
         config
         
-        start_point = 95;
-        end_point = 55;
-        
         motor_horizontal;
         motor_vertical;
         
@@ -63,13 +60,14 @@ classdef HapticSetup < handle
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
             connect(obj.motor_horizontal, obj.config.horizontal_serial_number);
-            
+            obj.is_motor_horizontal_connected = 1;
         end
         
         function [] = connect_vertical_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
             connect(obj.motor_vertical, obj.config.vertical_serial_number);
+            obj.is_motor_vertical_connected = 1;
         end
         
         function [] = connect_motors(obj)
@@ -84,13 +82,16 @@ classdef HapticSetup < handle
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
             disconnect(obj.motor_horizontal);
-            
+            obj.is_motor_horizontal_connected = 0;
+
         end
         
         function [] = disconnect_vertical_motor(obj)
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
             disconnect(obj.motor_vertical);
+            obj.is_motor_horizontal_connected = 0;
+
         end
         
         function [] = disconnect_motors(obj)
@@ -318,7 +319,8 @@ classdef HapticSetup < handle
         function [] = controller_step_multiple(obj)
 
             obj.status = 0;
-
+            
+            i = 1;
             while (i < obj.config.initial_pid_tuning_trial)
                 
                 obj.controller_step();

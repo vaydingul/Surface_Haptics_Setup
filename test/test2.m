@@ -18,5 +18,13 @@ if haptic_setup.is_simulation_running
 
 	disp("It looks like simulation is running!")
 
+end
 %! Check whether the simulink file is started properly
 
+
+%% Don't forget to close the simulation
+
+haptic_setup.stop_simulation();
+
+
+% OK

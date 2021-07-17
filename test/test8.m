@@ -29,22 +29,30 @@ haptic_setup.set_velocity_vertical_motor(20, 10);
 haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.initial_horizontal_position);
 haptic_setup.move_vertical_motor_to_position(haptic_setup.config.initial_vertical_position);
             
+%% Move horizontal motor to origin just in case
+
+haptic_setup.move_horizontal_motor_to_position(0);
 
 %% Continuous movement of horizontal motor for 1 sec.
 
 haptic_setup.move_horizontal_motor_continuous(1);
 
 % Wait for 1 second
-pause(1.0);
+pause(3.0);
 
 haptic_setup.stop_horizontal_motor();
+
+%% Move vertical motor to origin just in case
+
+haptic_setup.move_vertical_motor_to_position(0);
+
 
 %% Continuous movement of vertical motor for 1 sec.
 
 haptic_setup.move_vertical_motor_continuous(1);
 
 % Wait for 1 second
-pause(1.0);
+pause(2.0);
 
 haptic_setup.stop_vertical_motor();
 
@@ -58,3 +66,5 @@ haptic_setup.disconnect_motors();
 
 haptic_setup.stop_simulation();
 
+
+% OK

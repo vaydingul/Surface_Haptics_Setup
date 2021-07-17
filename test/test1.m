@@ -13,3 +13,4 @@ haptic_setup = HapticSetup(config);
 %! Check whether HapticSetup instance configured properly
 
 
+% OK

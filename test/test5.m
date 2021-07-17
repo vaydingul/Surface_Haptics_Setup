@@ -18,6 +18,10 @@ haptic_setup.start_simulation();
 
 haptic_setup.connect_motors();
 
+%% Home the motors to have some reference position
+
+haptic_setup.home_motors(); 
+
 %% Set velocity for the motors;
 
 haptic_setup.set_velocity_horizontal_motor(10, 10);
@@ -50,3 +54,5 @@ haptic_setup.disconnect_motors();
 %% Don't forget to close the simulation
 
 haptic_setup.stop_simulation();
+
+% OK

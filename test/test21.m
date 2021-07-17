@@ -26,3 +26,8 @@ haptic_setup.kill();
 
 %% Restart the simulation
 haptic_setup.start();
+
+%% Re-kill the simulation
+haptic_setup.kill();
+
+% OK

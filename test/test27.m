@@ -22,6 +22,8 @@ haptic_setup.is_control_active = 1;
 
 
 %% Control the normal force
+haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.x2)
+
 haptic_setup.control();
 
 %% One straight backward pass
@@ -30,3 +32,5 @@ haptic_setup.backward_pass_continuous();
 
 %% Kill the simulation
 haptic_setup.kill();
+
+% OK

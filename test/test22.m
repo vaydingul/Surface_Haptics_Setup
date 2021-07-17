@@ -20,9 +20,15 @@ haptic_setup.is_control_active = 1;
 
 %! Check whether simulink displays for accuracy of the positions
 
-%% Kill the simulation
-haptic_setup.kill();
+%% Stop the simulation
+haptic_setup.stop();
 
 
 %% Restart the simulation
 haptic_setup.start();
+
+%% Re-kill the simulation
+
+haptic_setup.kill();
+
+% OK

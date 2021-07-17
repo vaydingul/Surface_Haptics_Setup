@@ -90,7 +90,7 @@ classdef HapticSetup < handle
             %CONNECT_HORIZONTAL_MOTOR Connect to the horizontal motor
             %   Detailed explanation goes here
             disconnect(obj.motor_vertical);
-            obj.is_motor_horizontal_connected = 0;
+            obj.is_motor_vertical_connected = 0;
             
         end
         
@@ -333,9 +333,11 @@ classdef HapticSetup < handle
                 obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
 
                 
-                pause(.1);
+                pause(.05);
                 
                 obj.move_vertical_motor_continuous(1);
+                
+                pause(.05);
             end
             
         end
@@ -349,7 +351,7 @@ classdef HapticSetup < handle
                 
                 obj.controller_step();
                 
-                i = i + 1
+                i = i + 1;
             end
             
             obj.stop_vertical_motor();
@@ -393,7 +395,7 @@ classdef HapticSetup < handle
                 
                 obj.controller_step();
                 
-                i = i + 1
+                i = i + 1;
             end
             
             disp("Force control finished!");
@@ -422,7 +424,7 @@ classdef HapticSetup < handle
                     
                     obj.controller_step();
                     
-                    k = k + 1
+                    k = k + 1;
                 end
                 
                 obj.stop_vertical_motor();
@@ -441,7 +443,7 @@ classdef HapticSetup < handle
                     
                     obj.controller_step();
                     
-                    k = k + 1
+                    k = k + 1;
                 end
                 
                 obj.stop_vertical_motor();
@@ -481,13 +483,13 @@ classdef HapticSetup < handle
         
         function [] = forward_pass_continuous(obj)
             
-            obj.state.forward_pass_continuous();
+            obj.state.forward_pass_continuous(obj);
             
         end
         
         function [] = backward_pass_continuous(obj)
             
-            obj.state.backward_pass_continuous();
+            obj.state.backward_pass_continuous(obj);
             
         end
         

@@ -22,3 +22,5 @@ haptic_setup.is_control_active = 1;
 
 %% Kill the simulation
 haptic_setup.kill();
+
+% OK

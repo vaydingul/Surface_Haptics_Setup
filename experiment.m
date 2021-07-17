@@ -16,7 +16,9 @@ haptic_setup = HapticSetup(config);
 %% Start experiment
 haptic_setup.start(); 
 
+%% Open the control
 
+haptic_setup.is_control_active = 1;
 %% Control the normal force
 
 haptic_setup.control(); 
@@ -30,7 +32,7 @@ while (i <= haptic_setup.config.number_of_slidings)
 
 	current_velocity = haptic_setup.config.sliding_velocity(i);
 
-	haptic_setup.set_velocity_horizontal_motor(current_velocity, haptic_setup.config.max_acceleration_safety);
+	haptic_setup.set_velocity_horizontal_motor(current_velocity, 20);
 
 	haptic_setup.finger_relaxation();
 
@@ -40,13 +42,11 @@ while (i <= haptic_setup.config.number_of_slidings)
 
 	haptic_setup.backward_pass_continuous()
 
-	haptic_setup.state
-
-	i = i + 1;
+	i = i + 1
 
 end
 
-
+haptic_setup.kill();
 
 %% Plot
 

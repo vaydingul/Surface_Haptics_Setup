@@ -24,9 +24,13 @@ haptic_setup.is_control_active = 1;
 %% Control the normal force
 haptic_setup.control();
 
+haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.x1)
+
 %% One straight forward pass
 
 haptic_setup.forward_pass_continuous();
 
 %% Kill the simulation
 haptic_setup.kill();
+
+% OK

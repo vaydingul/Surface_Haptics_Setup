@@ -36,7 +36,7 @@ haptic_setup.controller_step_multiple();
 pause(1.0)
 haptic_setup.set_velocity_horizontal_motor(20, 5);
 
-haptic_setup.forward_pass_continuous_();
+haptic_setup.backward_pass_continuous_();
 
 %! Check whether simulink displays for accuracy of the positions
 

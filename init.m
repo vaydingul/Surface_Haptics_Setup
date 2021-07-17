@@ -5,7 +5,7 @@
 
 % Experiment parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 config.participant_name = 'VolkanTrialSeries';
-config.number_of_slidings = 1; % How many sliding there will be in the experiment
+config.number_of_slidings = 3; % How many sliding there will be in the experiment
 config.simulation_name = 'experimentSim_2018a';
 config.sample_time = 1 / 2500;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,7 +66,9 @@ config.butterworth_sampling_frequency = 2500;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-config.sliding_velocity = [40];
+config.sliding_velocity = [40 30 20];
 %% condition
 
-config.condition = [1.0000    0.0000    0.5000];
+config.condition = [1.0000    0.0000    0.5000;
+    1.0000    0.0000    0.6;
+    1.0000    0.0000    0.7];

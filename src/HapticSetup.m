@@ -20,9 +20,9 @@ classdef HapticSetup < handle
         
         controller_output_runtime_object
         controller_output = 0;
-
+        
         is_control_active = 0;
-
+        
         state
         status = 0;
         
@@ -46,7 +46,7 @@ classdef HapticSetup < handle
             obj.controller_output_runtime_object = get_param([obj.config.simulation_name, '/', 'pid_output_saturated'], 'RuntimeObject');
             obj.is_simulation_running = 1;
             disp("Simulation started!");
-
+            
         end
         
         function [] = stop_simulation(obj)
@@ -83,7 +83,7 @@ classdef HapticSetup < handle
             %   Detailed explanation goes here
             disconnect(obj.motor_horizontal);
             obj.is_motor_horizontal_connected = 0;
-
+            
         end
         
         function [] = disconnect_vertical_motor(obj)
@@ -91,7 +91,7 @@ classdef HapticSetup < handle
             %   Detailed explanation goes here
             disconnect(obj.motor_vertical);
             obj.is_motor_horizontal_connected = 0;
-
+            
         end
         
         function [] = disconnect_motors(obj)
@@ -99,7 +99,6 @@ classdef HapticSetup < handle
             %   Detailed explanation goes here
             obj.disconnect_horizontal_motor();
             obj.disconnect_vertical_motor();
-            obj.update();
         end
         
         function [] = stop_horizontal_motor(obj)
@@ -216,10 +215,18 @@ classdef HapticSetup < handle
         
         function obj = update(obj)
             
-            obj.motor_horizontal_position = obj.motor_horizontal.position;
-            obj.motor_vertical_position = obj.motor_vertical.position;
+            if obj.is_motor_horizontal_connected
+                obj.motor_horizontal.updatestatus();
+                obj.motor_horizontal_position = obj.motor_horizontal.position;
+            end
+            if obj.is_motor_vertical_connected
+                obj.motor_vertical.updatestatus();
+                obj.motor_vertical_position = obj.motor_vertical.position;
+            end
             
-            obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
+            if obj.is_simulation_running
+                obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
+            end
             
             set_param([obj.config.simulation_name '/' 'Status'], 'Value', num2str(obj.status));
             set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.motor_vertical.position));
@@ -244,80 +251,97 @@ classdef HapticSetup < handle
             obj.move_horizontal_motor_to_position(obj.config.x1);
             
         end
-
+        
         function [] = forward_pass_continuous_(obj)
-
-            obj.status = 1;
-            obj.update();
             
-            obj.move_horizontal_motor_to_position(obj.config.x1);
-            obj.move_horizontal_motor_continuous(-1);
-            
-            while obj.motor_horizontal_position > obj.config.x2
-                
-                obj.update();
-                obj.controller_step();
-                
-            end
-            
-            obj.stop_motors();
-            obj.update();
-            
-        end
-
-        function [] = backward_pass_continuous_(obj)
-
             obj.status = 0;
             obj.update();
             
             obj.move_horizontal_motor_to_position(obj.config.x1);
+            
+            obj.status = 1;
+            obj.update();
+            
             obj.move_horizontal_motor_continuous(-1);
             
-            while obj.motor_horizontal_position > obj.config.x2
+            while obj.motor_horizontal_position >= obj.config.x2
                 
+                %disp(num2str(obj.motor_horizontal_position))
                 obj.update();
                 obj.controller_step();
                 
             end
             
-            obj.stop_motors();
+            obj.stop_horizontal_motor();
+            obj.status = 0;
             obj.update();
             
         end
         
+        function [] = backward_pass_continuous_(obj)
+            
+            obj.status = 0;
+            obj.update();
+            
+            obj.move_horizontal_motor_to_position(obj.config.x2);
+            
+            obj.status = 0;
+            obj.update();
+            
+            obj.move_horizontal_motor_continuous(1);
+            
+            while obj.motor_horizontal_position <= obj.config.x1
+                
+                %disp(num2str(obj.motor_horizontal_position))
+                obj.update();
+                obj.controller_step();
+                
+            end
+            
+            obj.stop_horizontal_motor();
+            obj.status = 0;
+            obj.update();
+            
+            
+            
+            
+            
+            
+        end
+        
         function [] = controller_step(obj)
-
+            
             %obj.state = 0;
             obj.update();
-
+            
             if obj.is_control_active
-
+                
                 % If the stage is below the safe travel limit
                 if (obj.motor_vertical_position < (obj.config.max_travel_safety_vertical))
-
+                    
                     % Set current_velocity of the vertical stage based on the PID output
                     vel = -sign(obj.controller_output);
-
+                    
                     % Check if it is zero.
                     if (vel == 0), vel = 1; end
-
+                    
                     obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
-
+                    
                 else
-
+                    
                     obj.set_velocity_vertical_motor(-1, 10);
-
+                    
                 end
-
+                
                 pause(.1);
-
+                
                 obj.move_vertical_motor_continuous(1);
             end
-
+            
         end
         
         function [] = controller_step_multiple(obj)
-
+            
             obj.status = 0;
             
             i = 1;
@@ -453,17 +477,17 @@ classdef HapticSetup < handle
             obj.state.kill(obj);
             
         end
-
+        
         function [] = forward_pass_continuous(obj)
-
+            
             obj.state.forward_pass_continuous();
-
+            
         end
-
+        
         function [] = backward_pass_continuous(obj)
-
+            
             obj.state.backward_pass_continuous();
-
+            
         end
         
         function [] = forward_pass(obj)

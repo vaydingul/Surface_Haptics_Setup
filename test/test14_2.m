@@ -1,5 +1,5 @@
 %% Kill them all!
-clc;clear;
+clc; clear;
 close all;
 %% Initialize the configuration parameters
 
@@ -20,21 +20,17 @@ haptic_setup.connect_motors();
 
 %% Set velocity for the motors;
 
-haptic_setup.set_velocity_horizontal_motor(20, 5);
-haptic_setup.set_velocity_vertical_motor(20, 5);
-
+haptic_setup.set_velocity_horizontal_motor(10, 5);
+haptic_setup.set_velocity_vertical_motor(10, 5);
 
 %% Move the motors to initial position
 
 haptic_setup.move_horizontal_motor_to_position(haptic_setup.config.initial_horizontal_position);
 haptic_setup.move_vertical_motor_to_position(haptic_setup.config.initial_vertical_position);
-            
 
-%% Backward pass of the horizontal motor
+%% Forward pass of the horizontal motor
 
-haptic_setup.backward_pass_();
-
-
+haptic_setup.forward_pass_continuous_();
 
 %! Check whether simulink displays for accuracy of the positions
 

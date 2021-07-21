@@ -1,34 +1,30 @@
-% Construction of the config struct
+%% Import data from spreadsheet
+
 %% Fetch the condition file
 
 [file, path] = uigetfile('*.xlsx');
 path_to_condition_file = [path file];
+%% Import the data
+[~, ~, raw] = xlsread(path_to_condition_file,'Sheet1','A2:D100');
+raw(cellfun(@(x) ~isempty(x) && isnumeric(x) && isnan(x),raw)) = {''};
 
-%% Set up the Import Options and import the data
-opts = spreadsheetImportOptions("NumVariables", 4);
+%% Replace non-numeric cells with NaN
+R = cellfun(@(x) ~isnumeric(x) && ~islogical(x),raw); % Find non-numeric cells
+raw(R) = {NaN}; % Replace non-numeric cells
 
-% Specify sheet and range
-opts.Sheet = "Sheet1";
-opts.DataRange = "A2:D100";
+%% Create output variable
+data = reshape([raw{:}],size(raw));
 
-% Specify column names and types
-opts.VariableNames = ["ac_dc", "voltage_amplitude", "desired_normal_force", "sliding_velocity"];
-opts.VariableTypes = ["double", "double", "double", "double"];
+%% Allocate imported array to column variable names
+ixs = ~isnan(data(:,1));
 
-% Import the data
-tbl = readtable(path_to_condition_file, opts, "UseExcel", false);
-
-%% Convert to output type
-ixs = ~isnan(tbl.ac_dc);
-config.ac_dc = tbl.ac_dc(ixs);
-config.voltage_amplitude = tbl.voltage_amplitude(ixs);
-config.desired_normal_force = tbl.desired_normal_force(ixs);
-config.sliding_velocity = tbl.sliding_velocity(ixs);
-
-config.number_of_slidings = length(ac_dc); % How many sliding there will be in the experiment
-
+config.ac_dc = data(ixs,1);
+config.voltage_amplitude = data(ixs,2);
+config.desired_normal_force = data(ixs,3);
+config.sliding_velocity = data(ixs,4);
+config.number_of_slidings = length(config.ac_dc);
 %% Clear temporary variables
-clear opts tbl
+clearvars data raw R path_to_condition_file ixs file path;
 
 %% Parameters
 

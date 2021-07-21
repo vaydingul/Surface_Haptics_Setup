@@ -226,30 +226,36 @@ classdef HapticSetup < handle
             
             if obj.is_simulation_running
                 obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
+                
+                
+                set_param([obj.config.simulation_name '/' 'Status'], 'Value', num2str(obj.status));
+                set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.motor_vertical.position));
+                set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.motor_horizontal.position));
             end
-            
-            set_param([obj.config.simulation_name '/' 'Status'], 'Value', num2str(obj.status));
-            set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.motor_vertical.position));
-            set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.motor_horizontal.position));
-            
         end
         
         function [] = forward_pass_(obj)
             
             obj.status = 1;
             obj.update();
+            
             obj.move_horizontal_motor_to_position(obj.config.x1);
             obj.move_horizontal_motor_to_position(obj.config.x2);
             
+            obj.status = 0;
+            obj.update();
         end
         
         function [] = backward_pass_(obj)
             
-            obj.status = 0;
+            obj.status = 2;
             obj.update();
+            
             obj.move_horizontal_motor_to_position(obj.config.x2);
             obj.move_horizontal_motor_to_position(obj.config.x1);
             
+            obj.status = 0;
+            obj.update();
         end
         
         function [] = forward_pass_continuous_(obj)
@@ -290,7 +296,7 @@ classdef HapticSetup < handle
             
             obj.move_horizontal_motor_to_position(obj.config.x2);
             
-            obj.status = 0;
+            obj.status = 2;
             obj.update();
             
             obj.move_horizontal_motor_continuous(1);
@@ -303,9 +309,6 @@ classdef HapticSetup < handle
                 
             end
             
-            obj.status = 0;
-            obj.update();
-            
             
             if obj.is_control_active
                 obj.stop_motors();
@@ -313,12 +316,15 @@ classdef HapticSetup < handle
                 obj.stop_horizontal_motor();
             end
             
+            obj.status = 0;
+            obj.update();
+            
+            
        
         end
         
         function [] = controller_step(obj)
             
-            %obj.state = 0;
             obj.update();
             
             if obj.is_control_active
@@ -344,7 +350,8 @@ classdef HapticSetup < handle
         
         function [] = controller_step_multiple(obj)
             
-            obj.status = 0;
+            obj.status = 3;
+            obj.update();
             
             i = 1;
             while (i < obj.config.initial_pid_tuning_trial)
@@ -355,12 +362,14 @@ classdef HapticSetup < handle
             end
             
             obj.stop_vertical_motor();
+            
+            obj.status = 0;
             obj.update();
         end
         
         function [] = finger_relaxation_(obj)
             
-            obj.status = 0;
+            obj.status = 4;
             obj.update();
             
             obj.set_velocity_vertical_motor(obj.config.max_velocity_safety, obj.config.max_acceleration_safety)
@@ -369,97 +378,10 @@ classdef HapticSetup < handle
             obj.move_vertical_motor_to_position(obj.motor_vertical_position - obj.config.relaxation_distance);
             obj.set_velocity_vertical_motor(obj.config.min_velocity_safety, obj.config.min_acceleration_safety)
             
+            obj.status = 0;
+            obj.update();
         end
-        
-        function [] = experiment(obj)
             
-            obj.start_simulation();
-            disp("Simulation started!");
-            % It connects to both vertical and horizontal motor
-            obj.connect_motors();
-            disp("Motors are connected!");
-            
-            % obj.home_motors();
-            disp("Motors are home!");
-            
-            % Move motors to the initial point
-            
-            obj.move_horizontal_motor_to_position(obj.config.initial_horizontal_position);
-            obj.move_vertical_motor_to_position(obj.config.initial_vertical_position);
-            disp("Stages are located to their initial positions!");
-            
-            i = 0;
-            disp("Force control started!");
-            
-            while (i < obj.config.initial_pid_tuning_trial)
-                
-                obj.controller_step();
-                
-                i = i + 1;
-            end
-            
-            disp("Force control finished!");
-            obj.move_horizontal_motor_to_position(x1);
-            
-            i = 1;
-            
-            while (i <= obj.config.number_of_slidings)
-                
-                obj.current_sliding_iteration = i;
-                
-                current_velocity = obj.config.sliding_velocity(i);
-                
-                obj.set_velocity_horizontal_motor(current_velocity);
-                
-                obj.finger_relaxation();
-                obj.update();
-                
-                obj.forward_pass(x1, x2);
-                obj.update();
-                
-                k = 0;
-                disp("Force control started!");
-                
-                while (k < int32(obj.config.initial_pid_tuning_trial / 4))
-                    
-                    obj.controller_step();
-                    
-                    k = k + 1;
-                end
-                
-                obj.stop_vertical_motor();
-                disp("Force control finished!");
-                
-                obj.finger_relaxation();
-                obj.update();
-                
-                obj.backward_pass(x1, x2);
-                obj.update();
-                
-                k = 0;
-                disp("Force control started!");
-                
-                while (k < int32(obj.config.initial_pid_tuning_trial / 4))
-                    
-                    obj.controller_step();
-                    
-                    k = k + 1;
-                end
-                
-                obj.stop_vertical_motor();
-                disp("Force control finished!");
-                
-                i = i + 1;
-                
-            end
-            
-            obj.disconnect_motors();
-            
-            obj.stop_simulation();
-            
-        end
-        
-        
         
         
         
@@ -517,9 +439,9 @@ classdef HapticSetup < handle
             
         end
         
-        function [] = set_velocity(motor_, varargin)
+        function [] = set_velocity(motor_, velocity, acceleration)
             
-            setvelocity(motor_, varargin)
+            setvelocity(motor_, velocity, acceleration)
             
         end
         

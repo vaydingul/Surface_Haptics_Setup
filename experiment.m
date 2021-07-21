@@ -5,7 +5,7 @@ close all;
 
 % It creates a config file
 % TODO: upload it from .csv file
-init;
+init_2018;
 
 %% Create a instance of HapticSetup object
 

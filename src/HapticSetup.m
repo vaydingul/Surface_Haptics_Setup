@@ -361,22 +361,26 @@ classdef HapticSetup < handle
         
         function [] = controller_step_multiple(obj)
          
-            obj.status = 3;
-            obj.update();
-            
-            i = 1;
-            while (i < obj.config.pid_tuning_trial)
+            if obj.is_control_active
                 
-                obj.controller_step();
+                obj.status = 3;
+                obj.update();
                 
-                i = i + 1;
+                
+                i = 1;
+                while (i < obj.config.pid_tuning_trial)
+                    
+                    obj.controller_step();
+                    
+                    i = i + 1;
+                end
+                
+                obj.status = 0;
+                obj.update();
+                
+                obj.stop_vertical_motor();
+                
             end
-            
-            obj.status = 0;
-            obj.update();
-            
-            obj.stop_vertical_motor();
-            
             
         end
         

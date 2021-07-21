@@ -18,7 +18,7 @@ haptic_setup.start();
 
 %% Open the control
 
-haptic_setup.is_control_active = 1;
+haptic_setup.is_control_active = 0;
 %% Control the normal force
 
 haptic_setup.control(); 
@@ -58,4 +58,4 @@ haptic_setup.kill();
 
 mkdir('results')
 filename = ['results/experimental_results' strrep(strrep(datestr(datetime('now')), ' ', '_'), ':', '') '.mat'];
-save(filename, 'fn', 'fy', 'status', 'haptic_setup');
+save(filename, 'horizontal_position', 'vertical_position', 'fn', 'fy', 'status', 'haptic_setup');

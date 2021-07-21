@@ -228,7 +228,7 @@ classdef HapticSetup < handle
                 obj.controller_output = obj.controller_output_runtime_object.InputPort(1).Data;
                 
                 
-                set_param([obj.config.simulation_name '/' 'Status'], 'Value', num2str(obj.status));
+                set_param([obj.config.simulation_name '/' 'status'], 'Value', num2str(obj.status));
                 set_param([obj.config.simulation_name '/' 'vertical_position'], 'Value', num2str(obj.motor_vertical.position));
                 set_param([obj.config.simulation_name '/' 'horizontal_position'], 'Value', num2str(obj.motor_horizontal.position));
             end

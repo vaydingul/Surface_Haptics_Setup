@@ -29,7 +29,7 @@ classdef InitState < State
             warning('It is not recommended to kill() in INIT state.')
             haptic_setup.disconnect_motors()
             haptic_setup.stop_simulation();
-            haptic_setup.state = IdleState()
+            haptic_setup.state = IdleState();
 
         end
 

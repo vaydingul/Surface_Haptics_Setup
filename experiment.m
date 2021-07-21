@@ -32,7 +32,7 @@ while (i <= haptic_setup.config.number_of_slidings)
 
 	current_velocity = haptic_setup.config.sliding_velocity(i);
 
-	haptic_setup.set_velocity_horizontal_motor(current_velocity, 20);
+	haptic_setup.set_velocity_horizontal_motor(current_velocity, 10);
 
 	haptic_setup.finger_relaxation();
 
@@ -48,11 +48,9 @@ end
 
 haptic_setup.kill();
 
-%% Plot
 
-%ffnn = fn.signals.values(state.signals.values == 1);
-%plot([ffnn ones(length(ffnn), 1)*0.5]);
-%%
+%% Save the results
 
-%haptic_setup.move_horizontal_motor_to_position(0)
-%haptic_setup.home_motors()
+mkdir('results')
+filename = ['results/experimental_results' strrep(strrep(datestr(datetime('now')), ' ', '_'), ':', '') '.mat'];
+save(filename, 'fn', 'fy', 'status', 'haptic_setup');

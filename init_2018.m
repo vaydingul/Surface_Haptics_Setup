@@ -56,7 +56,7 @@ config.motor_vertical = motor();
 
 %% Constants
 config.delta_x = 20; % Step movement of the stages(-20,0,20)
-config.initial_vertical_position = 65; % Initial vertical position
+config.initial_vertical_position = 55; % Initial vertical position
 config.initial_horizontal_position = 75; % Initial vertical position
 config.max_travel_safety_vertical = config.initial_vertical_position + 13;
 config.max_travel_safety_horizontal = 120; % Max travel point of stage safety limitation horizntal
@@ -66,9 +66,9 @@ config.min_velocity_safety = 5;
 config.min_acceleration_safety = 5;
 config.minimum_acceleration = 0.000111; %min acceleration and horizontal stage current_velocity limitation
 config.maximum_acceleration = 50;
-config.initial_pid_tuning_trial = 200;
-config.relaxation_distance = 10;
-config.relaxation_duration = 1;
+config.pid_tuning_trial = 200;
+config.relaxation_distance = 5;
+config.relaxation_duration = 0.5;
 
 % Set the limits of the travelling trajectory
 config.x1 = min(config.initial_horizontal_position + config.delta_x, config.max_travel_safety_horizontal - 10); % 95

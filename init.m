@@ -70,7 +70,7 @@ config.min_velocity_safety = 5;
 config.min_acceleration_safety = 5;
 config.minimum_acceleration = 0.000111; %min acceleration and horizontal stage current_velocity limitation
 config.maximum_acceleration = 50;
-config.initial_pid_tuning_trial = 200;
+config.pid_tuning_trial = 200;
 config.relaxation_distance = 10;
 config.relaxation_duration = 1;
 

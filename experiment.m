@@ -23,29 +23,34 @@ haptic_setup.is_control_active = 1;
 
 haptic_setup.control(); 
 
-%% Main experiment
+%% Control check iteration
 
+haptic_setup.config.pid_tuning_trial = 50;
+%% Main experiment
 i = 1;
 while (i <= haptic_setup.config.number_of_slidings)
 
-	haptic_setup.current_sliding_iteration = i;
-
-	current_velocity = haptic_setup.config.sliding_velocity(i);
-
-	haptic_setup.set_velocity_horizontal_motor(current_velocity, 10);
-
-	haptic_setup.finger_relaxation();
-
-	haptic_setup.forward_pass_continuous()
-
-	haptic_setup.finger_relaxation();
-
-	haptic_setup.backward_pass_continuous()
+    haptic_setup.current_sliding_iteration = i;
+    
+    current_velocity = haptic_setup.config.sliding_velocity(i);
+    
+    haptic_setup.set_velocity_horizontal_motor(current_velocity, 10);
+    
+    haptic_setup.finger_relaxation();
+    haptic_setup.control();
+    
+    haptic_setup.forward_pass_continuous()
+    
+    haptic_setup.finger_relaxation();
+%     haptic_setup.control();
+    
+    haptic_setup.backward_pass_continuous()
 
 	i = i + 1
 
 end
 
+%% Kill the process
 haptic_setup.kill();
 
 

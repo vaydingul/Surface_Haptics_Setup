@@ -346,9 +346,10 @@ classdef HapticSetup < handle
                 % Check if it is zero.
                 if (vel == 0), vel = 1; end
 
-%                 obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
-                obj.set_velocity_vertical_motor(vel * min(abs(obj.controller_output) / 10, 1), 20);
-
+                %                obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
+                                obj.set_velocity_vertical_motor(vel * min(abs(obj.controller_output) / 10, 1), 50);
+%                 obj.set_velocity_vertical_motor(vel * 0.1, 50);
+                
                 
                 pause(.05);
                 

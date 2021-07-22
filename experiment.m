@@ -11,14 +11,12 @@ init_2018;
 
 haptic_setup = HapticSetup(config);
 
-%%
-
 %% Start experiment
 haptic_setup.start(); 
 
 %% Open the control
 
-haptic_setup.is_control_active = 0;
+haptic_setup.is_control_active = 1;
 %% Control the normal force
 
 haptic_setup.control(); 
@@ -37,7 +35,7 @@ while (i <= haptic_setup.config.number_of_slidings)
     haptic_setup.set_velocity_horizontal_motor(current_velocity, 10);
     
     haptic_setup.finger_relaxation();
-    haptic_setup.control();
+%     haptic_setup.control();
     
     haptic_setup.forward_pass_continuous()
     
@@ -49,7 +47,6 @@ while (i <= haptic_setup.config.number_of_slidings)
 	i = i + 1
 
 end
-
 %% Kill the process
 haptic_setup.kill();
 
@@ -59,3 +56,7 @@ haptic_setup.kill();
 mkdir('results')
 filename = ['results/experimental_results' strrep(strrep(datestr(datetime('now')), ' ', '_'), ':', '') '.mat'];
 save(filename, 'horizontal_position', 'vertical_position', 'fn', 'fy', 'status', 'haptic_setup');
+
+
+% Old PID (I) coefficient
+% 2/(.87*1.8)

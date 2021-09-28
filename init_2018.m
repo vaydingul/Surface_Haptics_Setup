@@ -23,6 +23,7 @@ config.voltage_amplitude = data(ixs,2);
 config.desired_normal_force = data(ixs,3);
 config.sliding_velocity = data(ixs,4);
 config.number_of_slidings = length(config.ac_dc);
+
 %% Clear temporary variables
 clearvars data raw R path_to_condition_file ixs file path;
 

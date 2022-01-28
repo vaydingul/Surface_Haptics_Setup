@@ -45,6 +45,7 @@ classdef HapticSetup < handle
             set_param(obj.config.simulation_name, 'SimulationCommand', 'start');
             obj.controller_output_runtime_object = get_param([obj.config.simulation_name, '/', 'pid_output_saturated'], 'RuntimeObject');
             obj.is_simulation_running = 1;
+            set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(0)); 
             disp("Simulation started!");
             
         end
@@ -330,7 +331,7 @@ classdef HapticSetup < handle
             
             
             
-       
+            
         end
         
         function [] = controller_step(obj)
@@ -342,13 +343,13 @@ classdef HapticSetup < handle
                 
                 % Set current_velocity of the vertical stage based on the PID output
                 vel = -sign(obj.controller_output);
-
+                
                 % Check if it is zero.
                 if (vel == 0), vel = 1; end
-
+                
                 %                obj.set_velocity_vertical_motor(vel * max(abs(obj.controller_output) / 10, obj.config.minimum_acceleration), max(abs(obj.controller_output), obj.config.minimum_acceleration));
-                                obj.set_velocity_vertical_motor(vel * min(abs(obj.controller_output) / 10, 1), 50);
-%                 obj.set_velocity_vertical_motor(vel * 0.1, 50);
+                obj.set_velocity_vertical_motor(vel * min(abs(obj.controller_output) / 10, 1), 50);
+                %                 obj.set_velocity_vertical_motor(vel * 0.1, 50);
                 
                 
                 pause(.05);
@@ -361,7 +362,7 @@ classdef HapticSetup < handle
         end
         
         function [] = controller_step_multiple(obj)
-         
+            
             if obj.is_control_active
                 
                 obj.status = 3;
@@ -399,8 +400,14 @@ classdef HapticSetup < handle
             obj.status = 0;
             obj.update();
         end
-            
         
+        function [] = take_photograph(obj)
+           
+           set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(3)); 
+           set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(0)); 
+
+            
+        end
         
         
         function [] = start(obj)

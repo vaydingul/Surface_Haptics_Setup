@@ -45,7 +45,6 @@ classdef HapticSetup < handle
             set_param(obj.config.simulation_name, 'SimulationCommand', 'start');
             obj.controller_output_runtime_object = get_param([obj.config.simulation_name, '/', 'pid_output_saturated'], 'RuntimeObject');
             obj.is_simulation_running = 1;
-            set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(0)); 
             disp("Simulation started!");
             
         end
@@ -401,14 +400,7 @@ classdef HapticSetup < handle
             obj.update();
         end
         
-        function [] = take_photograph(obj)
-           
-           set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(3)); 
-           set_param([obj.config.simulation_name '/' 'camera_trigger'], 'Value', num2str(0)); 
-
-            
-        end
-        
+               
         
         function [] = start(obj)
             
